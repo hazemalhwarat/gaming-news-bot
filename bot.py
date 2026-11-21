@@ -188,7 +188,10 @@ def fetch_free_games() -> list[dict]:
 
 
 def fetch_deals() -> list[dict]:
-    stores = {s["storeID"]: s["storeName"] for s in get(sources.CHEAPSHARK_STORES_URL).json()}
+    try:
+        stores = {s["storeID"]: s["storeName"] for s in get(sources.CHEAPSHARK_STORES_URL).json()}
+    except Exception:
+        stores = sources.STORE_NAMES
     items = []
     for page in range(3):
         for d in get(sources.CHEAPSHARK_URL.format(page=page)).json():
