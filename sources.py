@@ -96,6 +96,7 @@ TRAILERS = [
 ]
 
 DEALS_RSS = [
+    {"name": "GG.deals", "url": "https://gg.deals/news/feed/"},
     {"name": "Indie Game Bundles", "url": "https://www.indiegamebundles.com/feed/"},
 ]
 
@@ -109,17 +110,3 @@ RSS_FEEDS = (
 
 # free games: GamerPower covers Epic, Steam, GOG, Prime Gaming, mobile, etc.
 GAMERPOWER_URL = "https://www.gamerpower.com/api/giveaways?type=game&sort-by=date"
-
-# discounted games: only big cuts on well-reviewed games
-CHEAPSHARK_URL = "https://www.cheapshark.com/api/1.0/deals?sortBy=Recent&metacritic=80&pageSize=60&pageNumber={page}"
-CHEAPSHARK_STORES_URL = "https://www.cheapshark.com/api/1.0/stores"
-# fallback when the store list can't be fetched (CheapShark rejects it from GitHub's servers)
-STORE_NAMES = {
-    "1": "Steam", "2": "GamersGate", "3": "GreenManGaming", "7": "GOG", "11": "Humble Store",
-    "13": "Ubisoft Store", "15": "Fanatical", "21": "WinGameStore", "23": "GameBillet",
-    "24": "Voidu", "25": "Epic Games Store", "27": "Gamesplanet", "28": "Gamesload",
-    "29": "2Game", "30": "IndieGala", "31": "Blizzard Shop", "33": "DLGamer",
-    "34": "Noctre", "35": "DreamGame",
-}
-DEAL_MIN_SAVINGS = 75
-DEAL_MIN_RATING = 9.0
