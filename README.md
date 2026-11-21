@@ -5,8 +5,8 @@ Posts every new gaming story to a Discord channel, checked every 15 minutes by G
 - **Gaming News**: IGN, GameSpot, PC Gamer, Eurogamer, Kotaku, Game Informer, VGC, Insider Gaming, PlayStation Blog, Xbox Wire, Nintendo Life and ~25 more
 - **Trailers**: official YouTube channels (PlayStation, Xbox, Nintendo, Gematsu, Ubisoft, Capcom, Rockstar, ...), posted as playable videos
 - **Free Games**: Epic, Steam, GOG, Prime Gaming and mobile giveaways (GamerPower)
-- **Deals**: 75%+ off on games with Metacritic 80+ (CheapShark), plus bundles
-- **Esports**: HLTV, VLR.gg, Dexerto Esports, Esports Insider and more
+- **Deals**: big sales and bundles (GG.deals, Indie Game Bundles)
+- **Esports**: Dust2.us, VLR.gg, Dexerto Esports, Esports Insider and more
 
 Only stories from the last 24 hours are posted, and the same story from two outlets is posted once.
 Guides, puzzle answers, codes and film/TV coverage are filtered out.
