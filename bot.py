@@ -187,36 +187,9 @@ def fetch_free_games() -> list[dict]:
     return items
 
 
-def fetch_deals() -> list[dict]:
-    try:
-        stores = {s["storeID"]: s["storeName"] for s in get(sources.CHEAPSHARK_STORES_URL).json()}
-    except Exception:
-        stores = sources.STORE_NAMES
-    items = []
-    for page in range(3):
-        for d in get(sources.CHEAPSHARK_URL.format(page=page)).json():
-            if float(d["savings"]) < sources.DEAL_MIN_SAVINGS or float(d["dealRating"]) < sources.DEAL_MIN_RATING:
-                continue
-            image = d.get("thumb")
-            if d.get("steamAppID"):
-                image = f"https://cdn.akamai.steamstatic.com/steam/apps/{d['steamAppID']}/header.jpg"
-            items.append({
-                # keyed by game, so the same game on sale in several stores posts once
-                "id": f"deal:{d['gameID']}",
-                "kind": "deal",
-                "source": stores.get(d["storeID"], "Store"),
-                "title": f"{d['title']} — ${d['salePrice']} ({float(d['savings']):.0f}% off)",
-                "link": f"https://www.cheapshark.com/redirect?dealID={d['dealID']}",
-                "summary": f"Was ${d['normalPrice']} · Metacritic {d['metacriticScore']}",
-                "image": image,
-                "ts": float(d["lastChange"]),
-            })
-    return items
-
-
 def fetch_all() -> list[dict]:
     jobs = [(f["name"], lambda f=f: fetch_rss(f)) for f in sources.RSS_FEEDS]
-    jobs += [("GamerPower", fetch_free_games), ("CheapShark", fetch_deals)]
+    jobs.append(("GamerPower", fetch_free_games))
 
     def run(job):
         name, fn = job
