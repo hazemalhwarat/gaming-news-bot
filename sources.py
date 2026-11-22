@@ -58,17 +58,57 @@ NEWS = [
 
 CULTURE = [
     {"name": "Dexerto", "url": "https://www.dexerto.com/feed/"},
+    {"name": "Dexerto", "url": "https://www.dexerto.com/gaming/feed/"},
     {"name": "GameRant", "url": "https://gamerant.com/feed/"},
 ]
 
+# Titles naming one of these turn a news/culture story into "Competitive", so creator
+# drama, trends and viral stories about these games get flagged wherever they appear.
+COMPETITIVE_GAMES = (
+    r"(?i)\b(counter-strike|cs2|cs:go|csgo|valorant|vct|league of legends|lck|lec|lpl|"
+    r"dota|the international|rainbow six|r6|overwatch|apex legends|call of duty|cod|warzone|"
+    r"black ops|modern warfare|marvel rivals|fortnite|rocket league|rlcs|ea sports fc|ea fc|"
+    r"fc ?2\d|ultimate team|pubg|battlegrounds|mobile legends|mlbb|free fire|honor of kings|"
+    r"street fighter|tekken|deadlock|the finals|esports?|e-sports|esports world cup|ewc|"
+    r"blast (premier|slam|open|bounty)|iem|pgl|esl|riot games|faker|t1|fnatic|team liquid|"
+    r"team falcons|team vitality|natus vincere|g2 esports)\b"
+)
+
+# official game news (patch notes, events) straight from Steam
+STEAM_GAMES = [
+    ("Counter-Strike 2", 730), ("Dota 2", 570), ("Rainbow Six Siege", 359550),
+    ("Apex Legends", 1172470), ("PUBG", 578080), ("Marvel Rivals", 2767030),
+    ("Overwatch 2", 2357570), ("Deadlock", 1422450), ("The Finals", 2073850),
+    ("Rocket League", 252950), ("Street Fighter 6", 1364780), ("Tekken 8", 1778820),
+]
+
+COMPETITIVE = [
+    {"name": n, "url": f"https://store.steampowered.com/feeds/news/app/{app_id}/"}
+    for n, app_id in STEAM_GAMES
+] + [
+    # mobile coverage is mostly guides; keep only stories about competitive titles
+    {"name": "Pocket Gamer", "url": "https://www.pocketgamer.com/rss/", "competitive_only": True},
+    {"name": "Talkesport", "url": "https://www.talkesport.com/feed/", "competitive_only": True},
+]
+
+COMPETITIVE_TRAILER_WORDS = (
+    TRAILER_ONLY + r"|agent|champion|hero|operator|cinematic|battle pass|act \d|episode|"
+    r"new map|dev update|patch notes"
+)
+
 ESPORTS = [
-    {"name": "Dexerto Esports", "url": "https://www.dexerto.com/esports/feed/"},
     {"name": "Dust2.us", "url": "https://www.dust2.us/rss"},
     {"name": "VLR.gg", "url": "https://www.vlr.gg/rss"},
     {"name": "Hotspawn", "url": "https://www.hotspawn.com/feed"},
     {"name": "Esports News UK", "url": "https://esports-news.co.uk/feed/"},
     {"name": "Esports Insider", "url": "https://esportsinsider.com/feed"},
     {"name": "Esports Advocate", "url": "https://esportsadvocate.net/feed/"},
+    {"name": "Esports.gg", "url": "https://esports.gg/feed/"},
+    # these two mix in general gaming news, so keep only their competitive stories
+    {"name": "Fragster", "url": "https://www.fragster.com/feed/", "competitive_only": True},
+    {"name": "ESTNN", "url": "https://estnn.com/feed/", "competitive_only": True},
+    {"name": "GINX", "url": "https://www.ginx.tv/en/rss"},
+    {"name": "Strafe", "url": "https://www.strafe.com/news/rss/"},
 ]
 
 TRAILERS = [
@@ -93,6 +133,20 @@ TRAILERS = [
     yt("Epic Games", "UC5Qk8mWBwtMyEj7iQQYRk1A"),
     yt("Steam", "UChmZ6QbxgHlmX3ISIHxIpQQ"),
     yt("The Game Awards", "UCqDS7KWjAPKv-7ZSlro9OiQ"),
+    # official competitive game channels: trailers, patches and new heroes/agents only
+    yt("VALORANT", "UC8CX0LD98EDXl4UYX1MDCXg", COMPETITIVE_TRAILER_WORDS),
+    yt("League of Legends", "UC2t5bjwHdUX4vM2g8TRDq5g", COMPETITIVE_TRAILER_WORDS),
+    yt("Dota 2", "UCTQKT5QqO3h7y32G8VzuySQ", COMPETITIVE_TRAILER_WORDS),
+    yt("Apex Legends", "UC0ZV6M2THA81QT9hrVWJG3A", COMPETITIVE_TRAILER_WORDS),
+    yt("Call of Duty", "UC9YydG57epLqxA9cTzZXSeQ", COMPETITIVE_TRAILER_WORDS),
+    yt("Overwatch", "UClOf1XXinvZsy4wKPAkro2A", COMPETITIVE_TRAILER_WORDS),
+    yt("Marvel Rivals", "UCWzmOSSiSPbVnVu3ZAyDx2w", COMPETITIVE_TRAILER_WORDS),
+    yt("PUBG MOBILE", "UCKuBf7CRNf4OYoDyTtAL5fg", COMPETITIVE_TRAILER_WORDS),
+    yt("Free Fire", "UC7qTEluetD2pDB7lUBBlKuw", COMPETITIVE_TRAILER_WORDS),
+    yt("Honor of Kings", "UCAWqx9F2mfnF5VHtUaQjUCg", COMPETITIVE_TRAILER_WORDS),
+    yt("Rocket League", "UCBjQwd62OJgixzW49TKGERg", COMPETITIVE_TRAILER_WORDS),
+    yt("EA SPORTS FC", "UCoyaxd5LQSuP4ChkxK0pnZQ", COMPETITIVE_TRAILER_WORDS),
+    yt("Street Fighter", "UCVg9nCmmfIyP4QcGOnZZ9Qg", COMPETITIVE_TRAILER_WORDS),
 ]
 
 DEALS_RSS = [
@@ -103,6 +157,7 @@ DEALS_RSS = [
 RSS_FEEDS = (
     [dict(f, kind="news") for f in NEWS]
     + [dict(f, kind="culture") for f in CULTURE]
+    + [dict(f, kind="competitive") for f in COMPETITIVE]
     + [dict(f, kind="esports") for f in ESPORTS]
     + [dict(f, kind="trailer") for f in TRAILERS]
     + [dict(f, kind="deal") for f in DEALS_RSS]
