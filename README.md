@@ -6,7 +6,8 @@ Posts every new gaming story to a Discord channel, checked every 15 minutes by G
 - **Trailers**: official YouTube channels (PlayStation, Xbox, Nintendo, Gematsu, Ubisoft, Capcom, Rockstar, ...), posted as playable videos
 - **Free Games**: Epic, Steam, GOG, Prime Gaming and mobile giveaways (GamerPower)
 - **Deals**: big sales and bundles (GG.deals, Indie Game Bundles)
-- **Esports**: Dust2.us, VLR.gg, Dexerto Esports, Esports Insider and more
+- **Competitive**: any story naming a competitive game (CS2, Valorant, LoL, Dota 2, R6, Overwatch, Apex, CoD, Marvel Rivals, Fortnite, Rocket League, EA FC, PUBG / PUBG Mobile, MLBB, Free Fire, Honor of Kings, Street Fighter, Tekken), plus official Steam patch notes and official game channels
+- **Esports**: Dust2.us, VLR.gg, Hotspawn, Esports Insider and more
 
 Only stories from the last 24 hours are posted, and the same story from two outlets is posted once.
 Guides, puzzle answers, codes and film/TV coverage are filtered out.
@@ -16,7 +17,8 @@ Guides, puzzle answers, codes and film/TV coverage are filtered out.
 1. Repo → Settings → Secrets and variables → Actions → New repository secret:
    `DISCORD_WEBHOOK_URL` = the channel's webhook URL.
 2. Actions tab → enable workflows. It then runs on its own every 15 minutes
-   (GitHub may delay scheduled runs by a few minutes at busy times).
+   (GitHub can delay or skip scheduled runs, sometimes for hours; whatever was missed
+   goes out on the next run).
    "Run workflow" on the **gaming-news** workflow runs it immediately.
 
 ## Changing sources
