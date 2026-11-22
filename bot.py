@@ -24,8 +24,8 @@ import sources
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
 DRY_RUN = os.environ.get("DRY_RUN") == "1"
 MAX_AGE_HOURS = int(os.getenv("MAX_AGE_HOURS", "24"))
-# safety valve after an outage so the channel doesn't get hundreds of posts at once
-MAX_POSTS_PER_RUN = int(os.getenv("MAX_POSTS_PER_RUN", "40"))
+# GitHub sometimes skips scheduled runs for hours; anything over this waits for the next run
+MAX_POSTS_PER_RUN = int(os.getenv("MAX_POSTS_PER_RUN", "150"))
 TITLE_DEDUPE_HOURS = 72
 TITLE_SIMILARITY = 0.82
 SEEN_KEEP_DAYS = 10
@@ -37,6 +37,7 @@ TITLES_FILE = STATE_DIR / "posted_titles.json"
 KINDS = {
     "news": ("Gaming News", 0x5865F2),
     "culture": ("Gaming Culture", 0xEB459E),
+    "competitive": ("Competitive", 0xF47B20),
     "esports": ("Esports", 0x32C9E5),
     "trailer": ("Trailer", 0xED4245),
     "free": ("Free Game", 0x57F287),
@@ -47,8 +48,10 @@ KINDS = {
 JUNK_TITLE = re.compile(
     r"(?i)^how to |\bguide\b|walkthrough|tier list|\bhints?\b|answers? (for|to)\b|"
     r"\bwordle\b|\bconnections\b|\bcontexto\b|\bstrands\b|\bcrossword\b|"
-    r"\bcodes\b.*\(|redeem codes|all .* locations|best .* builds?\b"
+    r"\bcodes\b.*\(|redeem codes|all .* locations|best .* builds?\b|"
+    r"\bsbc\b|\bsolutions\b|^best players|dice links|free .* links"
 )
+COMPETITIVE_RE = re.compile(sources.COMPETITIVE_GAMES)
 
 # RSS category tags: these always mean "not news" ...
 BLOCK_TAGS = {
@@ -119,13 +122,14 @@ def entry_image(entry) -> Optional[str]:
     return match.group(1) if match else None
 
 
-def is_gaming_news(title: str, entry) -> bool:
+def is_gaming_news(title: str, entry, competitive: bool) -> bool:
     if JUNK_TITLE.search(title):
         return False
     tags = {(t.get("term") or "").strip().lower() for t in entry.get("tags", [])}
     if tags & BLOCK_TAGS:
         return False
-    if tags & OFF_TOPIC_TAGS and not tags & GAME_TAGS:
+    # a creator/viral story about a competitive game is wanted even when tagged "entertainment"
+    if tags & OFF_TOPIC_TAGS and not tags & GAME_TAGS and not competitive:
         return False
     return True
 
@@ -148,11 +152,18 @@ def fetch_rss(feed: dict) -> list[dict]:
             continue
         if include and not include.search(title):
             continue
-        if feed["kind"] in ("news", "culture") and not is_gaming_news(title, e):
+        competitive = bool(COMPETITIVE_RE.search(title))
+        if feed.get("competitive_only") and not competitive:
             continue
+        kind = feed["kind"]
+        if kind in ("news", "culture", "competitive", "esports"):
+            if not is_gaming_news(title, e, competitive):
+                continue
+            if competitive and kind != "esports":
+                kind = "competitive"
         items.append({
             "id": e.get("id") or link,
-            "kind": feed["kind"],
+            "kind": kind,
             "source": feed["name"],
             "title": title,
             "link": link,
@@ -304,10 +315,9 @@ def main() -> None:
         to_post.append(item)
 
     if len(to_post) > MAX_POSTS_PER_RUN:
-        log.info("capping %d new items to the newest %d", len(to_post), MAX_POSTS_PER_RUN)
-        for item in to_post[:-MAX_POSTS_PER_RUN]:
-            seen[item["id"]] = now
-        to_post = to_post[-MAX_POSTS_PER_RUN:]
+        # left unmarked, so the newer ones go out next run instead of being dropped
+        log.info("posting the oldest %d of %d new items now", MAX_POSTS_PER_RUN, len(to_post))
+        to_post = to_post[:MAX_POSTS_PER_RUN]
 
     posted = post(to_post)
     for item in posted:
