@@ -179,6 +179,8 @@ def fetch_free_games() -> list[dict]:
     for g in get(sources.GAMERPOWER_URL).json():
         ts = datetime.strptime(g["published_date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
         title = re.sub(r"\s*Giveaway\s*$", "", g["title"])
+        if not COMPETITIVE_RE.search(title):
+            continue
         bits = []
         if g.get("worth") and g["worth"] != "N/A":
             bits.append(f"~~{g['worth']}~~ **FREE**")
