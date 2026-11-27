@@ -1,16 +1,19 @@
-# Gaming News Discord Bot
+# Competitive Gaming News Discord Bot
 
-Posts every new gaming story to a Discord channel, checked every 15 minutes by GitHub Actions:
+Posts every new story about competitive games to a Discord channel, checked every 15 minutes by GitHub Actions.
 
-- **Gaming News**: IGN, GameSpot, PC Gamer, Eurogamer, Kotaku, Game Informer, VGC, Insider Gaming, PlayStation Blog, Xbox Wire, Nintendo Life and ~25 more
-- **Trailers**: official YouTube channels (PlayStation, Xbox, Nintendo, Gematsu, Ubisoft, Capcom, Rockstar, ...), posted as playable videos
-- **Free Games**: Epic, Steam, GOG, Prime Gaming and mobile giveaways (GamerPower)
-- **Deals**: big sales and bundles (GG.deals, Indie Game Bundles)
-- **Competitive**: any story naming a competitive game (CS2, Valorant, LoL, Dota 2, R6, Overwatch, Apex, CoD, Marvel Rivals, Fortnite, Rocket League, EA FC, PUBG / PUBG Mobile, MLBB, Free Fire, Honor of Kings, Street Fighter, Tekken), plus official Steam patch notes and official game channels
-- **Esports**: Dust2.us, VLR.gg, Hotspawn, Esports Insider and more
+Covered games: CS2, Valorant, LoL, Dota 2, R6, Overwatch, Apex, Call of Duty, Marvel Rivals, Fortnite, Rocket League,
+EA FC, PUBG / PUBG Mobile, Mobile Legends, Free Fire, Honor of Kings, Wild Rift, Brawl Stars, Street Fighter, Tekken,
+Mortal Kombat and more, plus the big tournaments, orgs and players (see `COMPETITIVE_GAMES` in [sources.py](sources.py)).
 
-Only stories from the last 24 hours are posted, and the same story from two outlets is posted once.
-Guides, puzzle answers, codes and film/TV coverage are filtered out.
+- **Esports**: Dust2.us, VLR.gg, Hotspawn, Strafe, GINX, Esports.gg, Esports Insider and more
+- **Competitive**: creator, trend and viral stories about those games from ~40 gaming sites (IGN, PC Gamer, Dexerto, ...),
+  plus official Steam patch notes
+- **Trailers**: official game channels (VALORANT, League of Legends, PUBG MOBILE, ...), posted as playable videos
+- **Free games / deals**: only when they are for a competitive game
+
+Anything that doesn't name a competitive game is skipped. Only stories from the last 24 hours are posted,
+and the same story from two outlets is posted once. Guides, puzzle answers and code lists are filtered out.
 
 ## Setup
 
@@ -23,5 +26,6 @@ Guides, puzzle answers, codes and film/TV coverage are filtered out.
 
 ## Changing sources
 
-Edit [sources.py](sources.py). YouTube channels use `yt("Name", "channel id")`.
+Edit [sources.py](sources.py). To cover another game, add its name to `COMPETITIVE_GAMES`.
+YouTube channels use `yt("Name", "channel id")`.
 `state/` holds what has already been posted; the workflow commits it after each run.
