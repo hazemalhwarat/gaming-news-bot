@@ -1,6 +1,9 @@
 # Every source the bot reads. "kind" sets the Discord label/color.
 # Optional "include" is a regex the title must match (used to keep only
 # trailers from channels that also post clips, shorts and streams).
+# The bot covers competitive games only: general sources (news, culture, general
+# trailers, deals) are marked competitive_only in RSS_FEEDS, so only their stories
+# that name a competitive game get through.
 
 TRAILER_ONLY = (
     r"(?i)trailer|teaser|reveal|gameplay|launch|announce|release date|overview|"
@@ -70,6 +73,8 @@ COMPETITIVE_GAMES = (
     r"black ops|modern warfare|marvel rivals|fortnite|rocket league|rlcs|ea sports fc|ea fc|"
     r"fc ?2\d|ultimate team|pubg|battlegrounds|mobile legends|mlbb|free fire|honor of kings|"
     r"street fighter|tekken|deadlock|the finals|esports?|e-sports|esports world cup|ewc|"
+    r"wild rift|brawl stars|clash royale|mortal kombat|smash bros|guilty gear|fatal fury|2xko|"
+    r"delta force|arena breakout|halo|splitgate|smite|"
     r"blast (premier|slam|open|bounty)|iem|pgl|esl|riot games|faker|t1|fnatic|team liquid|"
     r"team falcons|team vitality|natus vincere|g2 esports)\b"
 )
@@ -111,7 +116,7 @@ ESPORTS = [
     {"name": "Strafe", "url": "https://www.strafe.com/news/rss/"},
 ]
 
-TRAILERS = [
+GENERAL_TRAILERS = [
     # these channels post almost only trailers, so no title filter
     yt("Gematsu", "UCcaswDIh-nrXYofcYQm6KTg", include=None),
     yt("PlayStation", "UC-2Y8dQb0S6DtpxNgAKoJKA", include=None),
@@ -133,6 +138,9 @@ TRAILERS = [
     yt("Epic Games", "UC5Qk8mWBwtMyEj7iQQYRk1A"),
     yt("Steam", "UChmZ6QbxgHlmX3ISIHxIpQQ"),
     yt("The Game Awards", "UCqDS7KWjAPKv-7ZSlro9OiQ"),
+]
+
+COMPETITIVE_TRAILERS = [
     # official competitive game channels: trailers, patches and new heroes/agents only
     yt("VALORANT", "UC8CX0LD98EDXl4UYX1MDCXg", COMPETITIVE_TRAILER_WORDS),
     yt("League of Legends", "UC2t5bjwHdUX4vM2g8TRDq5g", COMPETITIVE_TRAILER_WORDS),
@@ -155,12 +163,13 @@ DEALS_RSS = [
 ]
 
 RSS_FEEDS = (
-    [dict(f, kind="news") for f in NEWS]
-    + [dict(f, kind="culture") for f in CULTURE]
+    [dict(f, kind="news", competitive_only=True) for f in NEWS]
+    + [dict(f, kind="culture", competitive_only=True) for f in CULTURE]
     + [dict(f, kind="competitive") for f in COMPETITIVE]
     + [dict(f, kind="esports") for f in ESPORTS]
-    + [dict(f, kind="trailer") for f in TRAILERS]
-    + [dict(f, kind="deal") for f in DEALS_RSS]
+    + [dict(f, kind="trailer", competitive_only=True) for f in GENERAL_TRAILERS]
+    + [dict(f, kind="trailer") for f in COMPETITIVE_TRAILERS]
+    + [dict(f, kind="deal", competitive_only=True) for f in DEALS_RSS]
 )
 
 # free games: GamerPower covers Epic, Steam, GOG, Prime Gaming, mobile, etc.
